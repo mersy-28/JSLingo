@@ -41,18 +41,23 @@ const LessonPage: React.FC = () => {
 
   const handleExerciseComplete = () => {
     if (!currentExerciseIndex.toString()) return;
-    
+  
     setCompletedExercises(prev => [...prev, currentExerciseIndex]);
     addXp(10);
-    
+  
     if (currentExerciseIndex < lessonExercises.length - 1) {
       setCurrentExerciseIndex(currentExerciseIndex + 1);
     }
-    
+  
     if (completedExercises.length + 1 === lessonExercises.length) {
       if (currentLesson) {
         completeLession(currentLesson.id);
         addXp(50);
+  
+        // 🔥 Unlock the next lesson too
+        if (nextLesson) {
+          completeLession(nextLesson.id);
+        }
       }
     }
   };
