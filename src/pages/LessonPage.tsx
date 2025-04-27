@@ -14,8 +14,10 @@ const LessonPage: React.FC = () => {
   const { lessonId } = useParams<{ lessonId: string }>();
   const navigate = useNavigate();
   const { completeLession, addXp } = useUserProgress();
+  const { completedLessons } = useUserProgress();
   
   const [currentLesson, setCurrentLesson] = useState<Lesson | null>(null);
+  const isLessonAlreadyCompleted = currentLesson ? completedLessons.includes(currentLesson.id) : false;
   const [lessonExercises, setLessonExercises] = useState<Exercise[]>([]);
   const [currentExerciseIndex, setCurrentExerciseIndex] = useState(0);
   const [completedExercises, setCompletedExercises] = useState<number[]>([]);
@@ -110,6 +112,12 @@ const LessonPage: React.FC = () => {
             onClick={() => navigate('/')}
             className="mr-3 p-2 rounded-full hover:bg-gray-100 transition-colors"
           >
+          {isLessonAlreadyCompleted && (
+  <div className="mt-2 text-green-600 flex items-center gap-2">
+    <CheckCircle className="h-5 w-5" />
+    <span>Lesson Completed</span>
+  </div>
+)}
             <ArrowLeft className="h-5 w-5 text-gray-600" />
           </button>
           <h1 className="text-2xl md:text-3xl font-bold">{currentLesson.title}</h1>
@@ -169,28 +177,28 @@ const LessonPage: React.FC = () => {
           Previous
         </button>
         
-        {allExercisesCompleted ? (
-          <button
-            onClick={() => navigate('/')}
-            className="px-4 py-2 bg-green-500 text-white rounded-md hover:bg-green-600 transition-colors flex items-center gap-2"
-          >
-            <CheckCircle className="h-4 w-4" />
-            Lesson Completed
-          </button>
-        ) : (
-          <button
-            onClick={goToNextExercise}
-            disabled={currentExerciseIndex === lessonExercises.length - 1}
-            className={`px-4 py-2 rounded-md flex items-center gap-2 ${
-              currentExerciseIndex === lessonExercises.length - 1
-                ? 'bg-gray-200 text-gray-400 cursor-not-allowed'
-                : 'bg-primary text-white hover:bg-primary-dark'
-            } transition-colors`}
-          >
-            Next
-            <ArrowRight className="h-4 w-4" />
-          </button>
-        )}
+        {allExercisesCompleted || isLessonAlreadyCompleted ? (
+  <button
+    onClick={() => navigate('/')}
+    className="px-4 py-2 bg-green-500 text-white rounded-md hover:bg-green-600 transition-colors flex items-center gap-2"
+  >
+    <CheckCircle className="h-4 w-4" />
+    Lesson Completed
+  </button>
+) : (
+  <button
+    onClick={goToNextExercise}
+    disabled={currentExerciseIndex === lessonExercises.length - 1}
+    className={`px-4 py-2 rounded-md flex items-center gap-2 ${
+      currentExerciseIndex === lessonExercises.length - 1
+        ? 'bg-gray-200 text-gray-400 cursor-not-allowed'
+        : 'bg-primary text-white hover:bg-primary-dark'
+    } transition-colors`}
+  >
+    Next
+    <ArrowRight className="h-4 w-4" />
+  </button>
+)}
       </div>
     </div>
   );
