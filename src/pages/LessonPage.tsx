@@ -13,14 +13,16 @@ import ReactDOM from 'react-dom/client';
 const LessonPage: React.FC = () => {
   const { lessonId } = useParams<{ lessonId: string }>();
   const navigate = useNavigate();
-  const { completeLession, addXp } = useUserProgress();
-  const { completedLessons } = useUserProgress();
+  const { completeLession, addXp, completedLessons } = useUserProgress();
   
   const [currentLesson, setCurrentLesson] = useState<Lesson | null>(null);
   const isLessonAlreadyCompleted = currentLesson ? completedLessons.includes(currentLesson.id) : false;
   const [lessonExercises, setLessonExercises] = useState<Exercise[]>([]);
   const [currentExerciseIndex, setCurrentExerciseIndex] = useState(0);
   const [completedExercises, setCompletedExercises] = useState<number[]>([]);
+  const nextLessonId = currentLesson ? Number(currentLesson.id) + 1 : null;
+const nextLesson = lessons.find(l => Number(l.id) === nextLessonId);
+
   
   useEffect(() => {
     if (lessonId) {
@@ -112,16 +114,16 @@ const LessonPage: React.FC = () => {
             onClick={() => navigate('/')}
             className="mr-3 p-2 rounded-full hover:bg-gray-100 transition-colors"
           >
-          {isLessonAlreadyCompleted && (
-  <div className="mt-2 text-green-600 flex items-center gap-2">
-    <CheckCircle className="h-5 w-5" />
-    <span>Lesson Completed</span>
-  </div>
-)}
             <ArrowLeft className="h-5 w-5 text-gray-600" />
           </button>
           <h1 className="text-2xl md:text-3xl font-bold">{currentLesson.title}</h1>
         </div>
+        {isLessonAlreadyCompleted && (
+          <div className="mt-2 text-green-600 flex items-center gap-2">
+            <CheckCircle className="h-5 w-5" />
+            <span>Lesson Completed</span>
+          </div>
+        )}
         <p className="text-gray-600 mb-4">{currentLesson.description}</p>
         <ProgressBar 
           value={completedExercises.length} 
@@ -163,42 +165,52 @@ const LessonPage: React.FC = () => {
         )}
       </div>
       
-      <div className="flex justify-between">
+      <div className="flex flex-col md:flex-row justify-between gap-4 mt-8">
         <button
           onClick={goToPreviousExercise}
           disabled={currentExerciseIndex === 0}
-          className={`px-4 py-2 rounded-md flex items-center gap-2 ${
+          className={`px-4 py-2 rounded-md flex items-center justify-center gap-2 ${
             currentExerciseIndex === 0
               ? 'bg-gray-200 text-gray-400 cursor-not-allowed'
               : 'bg-gray-200 text-gray-700 hover:bg-gray-300'
-          } transition-colors`}
+          } transition-colors w-full md:w-auto`}
         >
           <ArrowLeft className="h-4 w-4" />
           Previous
         </button>
-        
+
         {allExercisesCompleted || isLessonAlreadyCompleted ? (
-  <button
-    onClick={() => navigate('/')}
-    className="px-4 py-2 bg-green-500 text-white rounded-md hover:bg-green-600 transition-colors flex items-center gap-2"
-  >
-    <CheckCircle className="h-4 w-4" />
-    Lesson Completed
-  </button>
-) : (
-  <button
-    onClick={goToNextExercise}
-    disabled={currentExerciseIndex === lessonExercises.length - 1}
-    className={`px-4 py-2 rounded-md flex items-center gap-2 ${
-      currentExerciseIndex === lessonExercises.length - 1
-        ? 'bg-gray-200 text-gray-400 cursor-not-allowed'
-        : 'bg-primary text-white hover:bg-primary-dark'
-    } transition-colors`}
-  >
-    Next
-    <ArrowRight className="h-4 w-4" />
-  </button>
-)}
+          <div className="flex flex-col space-y-4 w-full md:w-auto">
+            <button
+              onClick={() => navigate('/')}
+              className="px-4 py-2 bg-green-500 text-white rounded-md hover:bg-green-600 transition-colors flex items-center justify-center gap-2"
+            >
+              <CheckCircle className="h-4 w-4" />
+              Lesson Completed - Return Home
+            </button>
+            {nextLesson && (
+              <button
+                onClick={() => navigate(`/lesson/${nextLesson.id}`)}
+                className="px-4 py-2 bg-blue-500 text-white rounded-md hover:bg-blue-600 transition-colors flex items-center justify-center gap-2"
+              >
+                Next Lesson →
+              </button>
+            )}
+          </div>
+        ) : (
+          <button
+            onClick={goToNextExercise}
+            disabled={currentExerciseIndex === lessonExercises.length - 1}
+            className={`px-4 py-2 rounded-md flex items-center justify-center gap-2 ${
+              currentExerciseIndex === lessonExercises.length - 1
+                ? 'bg-gray-200 text-gray-400 cursor-not-allowed'
+                : 'bg-primary text-white hover:bg-primary-dark'
+            } transition-colors w-full md:w-auto`}
+          >
+            Next
+            <ArrowRight className="h-4 w-4" />
+          </button>
+        )}
       </div>
     </div>
   );
