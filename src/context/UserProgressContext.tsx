@@ -33,6 +33,7 @@ export const UserProgressProvider: React.FC<UserProgressProviderProps> = ({ chil
     const saved = localStorage.getItem('jslingo-completed-lessons');
     return saved ? JSON.parse(saved) : [];
   });
+  const [unlockedLessons, setUnlockedLessons] = useState<string[]>(["1"]); // Unlock Lesson 1 by default
   
   const [currentLessonId, setCurrentLessonId] = useState<string | null>(() => {
     const saved = localStorage.getItem('jslingo-current-lesson');
@@ -115,6 +116,12 @@ export const UserProgressProvider: React.FC<UserProgressProviderProps> = ({ chil
     setDisplayName(data.displayName);
   };
 
+  const unlockLesson = (lessonId: string) => {
+    if (!unlockedLessons.includes(lessonId)) {
+      setUnlockedLessons(prev => [...prev, lessonId]);
+    }
+  };
+
   const value = {
     completedLessons,
     currentLessonId,
@@ -126,7 +133,9 @@ export const UserProgressProvider: React.FC<UserProgressProviderProps> = ({ chil
     displayName,
     completeLession,
     addXp,
-    updateProfile
+    updateProfile,
+    unlockedLessons,
+    unlockLesson
   };
 
   return (
