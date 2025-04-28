@@ -9,6 +9,7 @@ import ProgressBar from '../components/ProgressBar';
 import { useUserProgress } from '../context/UserProgressContext';
 import CodeBlock from '../components/CodeBlock';
 import ReactDOM from 'react-dom/client';
+import confetti from 'canvas-confetti';
 
 const LessonPage: React.FC = () => {
   const { lessonId } = useParams<{ lessonId: string }>();
@@ -53,11 +54,13 @@ const LessonPage: React.FC = () => {
       if (currentLesson) {
         completeLession(currentLesson.id);
         addXp(50);
-  
-        // 🔥 Unlock the next lesson too
-        if (nextLesson) {
-          completeLession(nextLesson.id);
-        }
+    
+        // 🎉 Fire confetti
+        confetti({
+          particleCount: 100,
+          spread: 70,
+          origin: { y: 0.6 },
+        });
       }
     }
   };

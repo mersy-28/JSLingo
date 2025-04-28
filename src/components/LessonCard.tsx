@@ -7,13 +7,18 @@ import { useUserProgress } from '../context/UserProgressContext';
 interface LessonCardProps {
   lesson: Lesson;
   index: number;
+  lessons: Lesson[];
 }
 
-const LessonCard: React.FC<LessonCardProps> = ({ lesson, index }) => {
-  const { completedLessons, currentLessonId } = useUserProgress();
+const LessonCard: React.FC<LessonCardProps> = ({ lesson, index, lessons }) => {
+  const { completedLessons } = useUserProgress();
   
   const isCompleted = completedLessons.includes(lesson.id);
-  const isAvailable = isCompleted || lesson.id === currentLessonId || index === 0;
+  const isFirstLesson = index === 0;
+  const previousLesson = index > 0 ? lessons[index - 1] : null;
+  const isPreviousLessonCompleted = previousLesson ? completedLessons.includes(previousLesson.id) : false;
+
+  const isAvailable = isFirstLesson || isPreviousLessonCompleted || isCompleted;
 
   return (
     <Link
@@ -77,6 +82,13 @@ const LessonCard: React.FC<LessonCardProps> = ({ lesson, index }) => {
         <div className="absolute top-3 right-3">
           <div className="bg-green-500 text-white rounded-full p-1">
             <CheckCircle className="h-5 w-5" />
+          </div>
+        </div>
+      )}
+      {isAvailable && !isCompleted && (
+        <div className="absolute top-3 left-3 animate-pulse">
+          <div className="bg-blue-500 text-white rounded-full px-2 py-1 text-xs font-semibold shadow">
+            Unlocked!
           </div>
         </div>
       )}
