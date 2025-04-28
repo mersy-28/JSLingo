@@ -124,9 +124,9 @@ const HomePage: React.FC = () => {
         </div>
         
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
-          {filteredLessons.map((lesson, index) => (
-            <LessonCard key={lesson.id} lesson={lesson} index={index} />
-          ))}
+  {filteredLessons.map((lesson, index) => (
+    <LessonCard key={lesson.id} lesson={lesson} index={index} lessons={filteredLessons} />
+    ))}
         </div>
       </section>
     </div>

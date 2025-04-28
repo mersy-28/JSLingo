@@ -23,7 +23,7 @@ const LessonPage: React.FC = () => {
   const [lessonExercises, setLessonExercises] = useState<Exercise[]>([]);
   const [currentExerciseIndex, setCurrentExerciseIndex] = useState(0);
   const [completedExercises, setCompletedExercises] = useState<number[]>([]);
-
+  const [lessonCompleted, setLessonCompleted] = useState(false);
   
   useEffect(() => {
     if (lessonId) {
@@ -54,6 +54,7 @@ const LessonPage: React.FC = () => {
       if (currentLesson) {
         completeLession(currentLesson.id);
         addXp(50);
+        setLessonCompleted(true); // ✅ manually mark lesson as completed
     
         // 🎉 Fire confetti
         confetti({
@@ -187,38 +188,38 @@ const LessonPage: React.FC = () => {
     Previous
   </button>
 
-  {allExercisesCompleted || isLessonAlreadyCompleted ? (
-    <div className="flex flex-col space-y-4 w-full md:w-auto">
-      <button
-        onClick={() => navigate('/')}
-        className="px-4 py-2 bg-green-500 text-white rounded-md hover:bg-green-600 transition-colors flex items-center justify-center gap-2"
-      >
-        <CheckCircle className="h-4 w-4" />
-        Lesson Completed - Return Home
-      </button>
-      {nextLesson && (
-        <button
-          onClick={() => navigate(`/lesson/${nextLesson.id}`)}
-          className="px-4 py-2 bg-blue-500 text-white rounded-md hover:bg-blue-600 transition-colors flex items-center justify-center gap-2"
-        >
-          Next Lesson →
-        </button>
-      )}
-    </div>
-  ) : (
+  {lessonCompleted || isLessonAlreadyCompleted ? (
+  <div className="flex flex-col space-y-4 w-full md:w-auto">
     <button
-      onClick={goToNextExercise}
-      disabled={currentExerciseIndex === lessonExercises.length - 1}
-      className={`px-4 py-2 rounded-md flex items-center justify-center gap-2 ${
-        currentExerciseIndex === lessonExercises.length - 1
-          ? 'bg-gray-200 text-gray-400 cursor-not-allowed'
-          : 'bg-primary text-white hover:bg-primary-dark'
-      } transition-colors w-full md:w-auto`}
+      onClick={() => navigate('/')}
+      className="px-4 py-2 bg-green-500 text-white rounded-md hover:bg-green-600 transition-colors flex items-center justify-center gap-2"
     >
-      Next
-      <ArrowRight className="h-4 w-4" />
+      <CheckCircle className="h-4 w-4" />
+      Lesson Completed - Return Home
     </button>
-  )}
+    {nextLesson && (
+      <button
+        onClick={() => navigate(`/lesson/${nextLesson.id}`)}
+        className="px-4 py-2 bg-blue-500 text-white rounded-md hover:bg-blue-600 transition-colors flex items-center justify-center gap-2"
+      >
+        Next Lesson →
+      </button>
+    )}
+  </div>
+) : (
+  <button
+    onClick={goToNextExercise}
+    disabled={currentExerciseIndex === lessonExercises.length - 1}
+    className={`px-4 py-2 rounded-md flex items-center justify-center gap-2 ${
+      currentExerciseIndex === lessonExercises.length - 1
+        ? 'bg-gray-200 text-gray-400 cursor-not-allowed'
+        : 'bg-primary text-white hover:bg-primary-dark'
+    } transition-colors w-full md:w-auto`}
+  >
+    Next
+    <ArrowRight className="h-4 w-4" />
+  </button>
+)}
 </div>
     </div>
   );
