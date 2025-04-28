@@ -4,10 +4,12 @@ import ProgressBar from '../components/ProgressBar';
 import { lessons } from '../data/lessons';
 import { useUserProgress } from '../context/UserProgressContext';
 import { Flame, Award, Rocket, Coffee } from 'lucide-react';
+import { useNavigate } from 'react-router-dom';
 
 const HomePage: React.FC = () => {
   const { completedLessons, streak, xp, level } = useUserProgress();
   const [filter, setFilter] = useState<'all' | 'beginner' | 'intermediate' | 'advanced'>('all');
+  const navigate = useNavigate();
 
   const filteredLessons = filter === 'all' 
     ? lessons 
@@ -56,23 +58,27 @@ const HomePage: React.FC = () => {
 
       {/* Daily goal section */}
       <section className="mb-12">
-        <div className="bg-orange-50 rounded-xl p-6 border border-orange-100">
-          <div className="flex flex-col md:flex-row items-center justify-between gap-4">
-            <div className="flex items-center">
-              <div className="bg-orange-100 p-3 rounded-full mr-4">
-                <Coffee className="h-6 w-6 text-orange-500" />
-              </div>
-              <div>
-                <h2 className="text-xl font-semibold text-gray-900">Daily Goal</h2>
-                <p className="text-gray-600">Complete 1 more lesson today to maintain your streak!</p>
-              </div>
-            </div>
-            <button className="px-6 py-3 bg-orange-500 hover:bg-orange-600 text-white font-medium rounded-lg transition-colors">
-              Start Lesson
-            </button>
-          </div>
+  <div className="bg-orange-50 rounded-xl p-6 border border-orange-100">
+    <div className="flex flex-col md:flex-row items-center justify-between gap-4">
+      <div className="flex items-center">
+        <div className="bg-orange-100 p-3 rounded-full mr-4">
+          <Coffee className="h-6 w-6 text-orange-500" />
         </div>
-      </section>
+        <div>
+          <h2 className="text-xl font-semibold text-gray-900">Daily Goal</h2>
+          <p className="text-gray-600">Complete 1 more lesson today to maintain your streak!</p>
+        </div>
+      </div>
+      <button
+        onClick={() => navigate(`/lesson/${filteredLessons[0].id}`)}
+        disabled={filteredLessons.length === 0}
+        className="px-6 py-3 bg-orange-500 hover:bg-orange-600 text-white font-medium rounded-lg transition-colors disabled:opacity-50 disabled:cursor-not-allowed"
+      >
+        Start Lesson
+      </button>
+    </div>
+  </div>
+</section>
       
       {/* Lessons section */}
       <section>
